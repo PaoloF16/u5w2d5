@@ -84,9 +84,13 @@ public class EmployeesService {
         this.employeesRepository.delete(found);
     }
 
-    public String uploadAvatar(MultipartFile file) {
+    public String uploadAvatar(long employeeId, MultipartFile file) {
+        Employee found = this.findById(employeeId);
         try {
-            return (String) imgUploader.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
+            String url = (String) imgUploader.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
+            found.setProfileImage(url);
+            this.employeesRepository.save(found);
+            return url;
         } catch (IOException e) {
             throw new BadRequestException("There was a problem uploading this file.");
         }

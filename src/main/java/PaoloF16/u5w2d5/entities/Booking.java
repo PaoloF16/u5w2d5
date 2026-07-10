@@ -1,5 +1,7 @@
 package PaoloF16.u5w2d5.entities;
 
+
+
 import jakarta.persistence.*;
 import lombok.*;
 

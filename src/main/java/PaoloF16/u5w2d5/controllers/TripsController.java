@@ -8,6 +8,7 @@ import PaoloF16.u5w2d5.payloads.NewTripDTO;
 import PaoloF16.u5w2d5.payloads.UpdateTripStatusDTO;
 import PaoloF16.u5w2d5.services.TripsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -81,6 +82,16 @@ public class TripsController {
     @PatchMapping("/{tripId}/status")
     public Trip updateStatus(@PathVariable long tripId, @RequestBody @Validated UpdateTripStatusDTO body) {
         return tripsService.updateTripStatus(tripId, body.newStatus());
+    }
+
+    //Paginazione
+    @GetMapping
+    public Page<Trip> getAllTrips(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String orderBy
+    ) {
+        return this.tripsService.getAll(page, size, orderBy);
     }
 
 }

@@ -10,6 +10,10 @@ import com.cloudinary.utils.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -82,6 +86,16 @@ public class EmployeesService {
     public void findByIdAndDelete(long employeeId) {
         Employee found = this.findById(employeeId);
         this.employeesRepository.delete(found);
+    }
+    //Paginazione
+    public Page<Employee> getAll(int page, int size, String orderBy) {
+        if (size <= 0) size = 10;
+        if (size > 15) size = 15;
+        if (page < 0) page = 0;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(orderBy));
+
+        return this.employeesRepository.findAll(pageable);
     }
 
     public String uploadAvatar(long employeeId, MultipartFile file) {

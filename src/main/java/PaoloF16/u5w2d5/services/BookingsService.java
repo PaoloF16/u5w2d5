@@ -9,7 +9,11 @@ import PaoloF16.u5w2d5.exceptions.NoBookingsFoundException;
 import PaoloF16.u5w2d5.exceptions.NotFoundException;
 import PaoloF16.u5w2d5.payloads.NewBookingDTO;
 import PaoloF16.u5w2d5.repositories.BookingsRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
@@ -66,6 +70,18 @@ public class BookingsService {
         return bookings;
     }
 
+    //Paginazione
+    public Page<Booking> getAll(int page, int size, String orderBy) {
+
+        if (size <= 0) size = 10;
+        if (size > 15) size = 15;
+        if (page < 0) page = 0;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(orderBy));
+
+        return this.bookingsRepository.findAll(pageable);
+    }
+
 
     public List<Booking> findByTrip(long tripId) {
         Trip trip = tripsService.findById(tripId);
@@ -100,6 +116,7 @@ public class BookingsService {
         Booking booking = new Booking("Assigned by admin", employee, trip);
         return bookingsRepository.save(booking);
     }
+
 
 
 }

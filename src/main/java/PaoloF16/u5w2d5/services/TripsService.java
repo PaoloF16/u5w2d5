@@ -8,6 +8,10 @@ import PaoloF16.u5w2d5.exceptions.NotFoundException;
 import PaoloF16.u5w2d5.payloads.NewTripDTO;
 import PaoloF16.u5w2d5.repositories.TripsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -59,6 +63,17 @@ public class TripsService {
         Trip found = this.findById(tripId);
         found.setStatus(newStatus);
         return tripsRepository.save(found);
+    }
+
+    //Paginazione
+    public Page<Trip> getAll(int page, int size, String orderBy) {
+        if (size <= 0) size = 10;
+        if (size > 15) size = 15;
+        if (page < 0) page = 0;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(orderBy));
+
+        return this.tripsRepository.findAll(pageable);
     }
 
     public List<Trip> findByStatus(TripStatus status) {

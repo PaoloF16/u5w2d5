@@ -6,6 +6,7 @@ import PaoloF16.u5w2d5.payloads.AssignEmployeeDTO;
 import PaoloF16.u5w2d5.payloads.NewBookingDTO;
 import PaoloF16.u5w2d5.services.BookingsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -57,6 +58,16 @@ public class BookingsController {
                     .stream().map(e -> e.getDefaultMessage()).toList());
         }
         return bookingsService.findByIdAndUpdate(bookingId, body);
+    }
+
+    //Paginazione
+    @GetMapping
+    public Page<Booking> getAllBookings(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String orderBy
+    ) {
+        return this.bookingsService.getAll(page, size, orderBy);
     }
 
     @PatchMapping("/{tripId}/assign")

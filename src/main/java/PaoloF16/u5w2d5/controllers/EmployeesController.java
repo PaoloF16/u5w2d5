@@ -5,6 +5,7 @@ import PaoloF16.u5w2d5.exceptions.ValidationException;
 import PaoloF16.u5w2d5.payloads.NewEmployeeDTO;
 import PaoloF16.u5w2d5.services.EmployeesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -59,5 +60,14 @@ public class EmployeesController {
     @PatchMapping("/{employeeId}/profile_image")
     public String uploadImage(@PathVariable long employeeId, @RequestParam("profileImage") MultipartFile file) {
         return this.employeesService.uploadAvatar(employeeId, file);
+    }
+    //Paginazione
+    @GetMapping
+    public Page<Employee> getEmployees(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String orderBy
+    ) {
+        return this.employeesService.getAll(page, size, orderBy);
     }
 }
